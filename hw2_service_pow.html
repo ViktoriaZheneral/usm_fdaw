@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<body>
+
+<div ng-app="myApp" ng-controller="myCtrl">
+	<h3>Raising a number to the second power!</h3>
+	<p>Our number is 4. Result of pow(4, 2) is {{number}}.</p>
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+
+app.service('pow', function() {
+    this.myFunc = function(x) {
+        return x*x;
+    }
+});
+
+app.controller('myCtrl', function($scope, pow) {
+  $scope.number = pow.myFunc(4);
+});
+</script>
+
+</body>
+</html>
