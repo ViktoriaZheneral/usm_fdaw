@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<body>
+<div ng-app="" ng-init="myUser = 'admin'; myPass = 'admin';">
+
+	<h3>Log in here:</h3>
+
+	<input ng-model="user" type="text" placeholder="login">
+ 	<input ng-model="password" type="password" placeholder="password" ng-disabled="myUser != user">
+ 
+ 	<p ng-show="myUser == user && myPass == password">Hello, friend!</p>
+ 	<p ng-hide="myUser == user && myPass == password">Sorry, goodbye!</p>
+
+</div>
+</body>
+</html>
