@@ -1,3 +1,3 @@
-Индивидуальная работа
-"Прогноз погоды"
-Абалина Виктория, IA1802 D2
+Individual work, FDAW
+Topic: "Weather forecast"
+Abalina Viktoria, IA1802 D2
