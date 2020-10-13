@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+	<title>Weather Podcast</title>
+	<link rel="shortcut icon" href="image/ico.png" />
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+
+<body ng-app="myApp" ng-controller="myCtrl">
+
+<div ng-include="'include.html'"></div>
+
+<ul>
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Weather</a></li>
+    <li><a href="#">Search</a></li>
+    <li><a href="#">About</a></li>
+</ul>
+
+<div>
+	<div>
+        <p><input ng-model="x.name" type="text"></p>
+    </div>
+	<p ng-repeat="x in city | filter : {'name' : x.name}">{{x.name + ": " + x.day + " day, " + x.night + " night, " + x.type}}</p>
+</div>
+
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope) {
+        $scope.city = [
+            {"name" : "Amsterdam", "day" : "+15", "night" : "+9", "type" : "storm"},
+            {"name" : "Berlin", "day" : "+21", "night" : "+17", "type" : "rain"},
+            {"name" : "Chisinau", "day" : "+23", "night" : "+14", "type" : "cloudy"},
+            {"name" : "Juneau", "day" : "+6", "night" : "-1", "type" : "snow"},
+            {"name" : "Kiev", "day" : "+20", "night" : "+15", "type" : "rain"},
+            {"name" : "London", "day" : "+14", "night" : "+7", "type" : "rain"},
+            {"name" : "Los-Angeles", "day" : "+29", "night" : "+25", "type" : "fair"},
+            {"name" : "New-York", "day" : "+19", "night" : "+15", "type" : "fair"}
+        ];
+
+        $scope.registration = [
+            {"login": "admin", "password" : "admin"},
+            {"login": "login", "password" : "password"},
+            {"login": "viktoria", "password" : "abalina1802"}
+        ];
+    });
+</script>
+
+</body>
+
+</html>
