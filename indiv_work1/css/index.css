@@ -1,3 +1,40 @@
 body {
-    
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color:#f2f2f2;
+}
+
+.modal {
+    z-index: 1040 !important;
+}
+
+.main {
+    width: 100vw;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.spanchik {
+    cursor: pointer;
+}
+
+.footer {
+    width: 100vw;
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e8e8e8;
+}
+
+.footer p {
+    display: block;
+    font-size: 1vw;
 }

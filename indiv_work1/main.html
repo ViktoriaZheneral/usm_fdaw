@@ -2,52 +2,178 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-	<title>Weather Podcast</title>
+    <meta charset="UTF-8">
+	<title>Weather Forecast</title>
 	<link rel="shortcut icon" href="image/ico.png" />
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 </head>
 
 <body ng-app="myApp" ng-controller="myCtrl">
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script>
+    $('#myModal').on('shown.bs.modal', function() {
+        $('#myInput').focus()
+    })
+</script>
+
 <div ng-include="'include.html'"></div>
 
-<ul>
-    <li><a href="#">Home</a></li>
-    <li><a href="#">Weather</a></li>
-    <li><a href="#">Search</a></li>
-    <li><a href="#">About</a></li>
-</ul>
+<div ng-hide="isLoggedIn"">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Press the button!</button>
+</div>
 
-<div>
-	<div>
-        <p><input ng-model="x.name" type="text"></p>
+<div ng-show="isLoggedIn">
+    <div class="menu">
+        <p ng-click="menu(false, false, false)">Home</p>
+        <p ng-click="menu(true, false, false)">Weather</p>
+        <p ng-click="menu(false, true, false)">Search</p>
+        <p ng-click="menu(false, false, true)"">About</p>
     </div>
-	<p ng-repeat="x in city | filter : {'name' : x.name}">{{x.name + ": " + x.day + " day, " + x.night + " night, " + x.type}}</p>
+    
+    <div class="main">
+        <div ng-hide="weather || search || about">
+            <div ng-mousemove="mouseMove($event)">
+                <h1><b>Home page!</b></h1>
+                <h3>Try to move your cursor over here...</h3>
+                <br>
+                <div ng-show="touched">
+                    <h4 ng-copy="count=count+1" ng-init="count=0">Coordinates: {{x + ', ' + y}}</h4>
+                    <p>Now copy your coordinates...</p>
+                    <p>You copied {{count}} times. Why?</p>
+                </div>
+            </div>
+        </div>
+        
+        <div ng-show="weather" class="weather">
+            <h3>Check the most popular results:</h3>
+            <br>
+            <p ng-repeat="x in city | limitTo : 3">{{x.name + ": " + x.day + " day, " + x.night + " night, " + x.type}}</p>
+            <br>
+            <h4>Or choose smth else from the list below...</h4>
+            <select ng-model="citySelect">
+                <option ng-repeat="xx in city | limitTo : 5: 4" value="{{xx.name}}"">{{xx.name}}</option>
+            </select>
+            <br><br>
+            <h4>{{citySelect}}</h4>
+        </div>
+        
+        <div ng-show="search">
+            <div>
+                <h4><input ng-model="y.name" type="text"> or <span class="spanchik" ng-click="removeItem($index)">X</span></h4>
+            </div>
+            <br>
+            <p ng-repeat="y in city | filter : {'name' : y.name} | orderBy : 'name'">{{y.name + ": " + y.day + " day, " + y.night + " night, " + y.type}}</p>
+        </div>
+        
+        <div ng-show="about">
+            <h3>About this site...</h3>
+            <br>
+            <h4>It has no sense. So just take a look at my ability to use different AngularJS elements.</h4>
+            <p ng-non-bindable>The {{average}} is a non-bindable object.</p>
+            <p>But {{average}} is bindable. This is the result of my ows service which calculates the average of two numbers.</p>
+            <p ng-init="averageInit = '7'">And {{averageInit}} was initialized by using ng-init right here.</p>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <footer-directive></footer-directive>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" ng-hide="isLoggedIn" data-backdrop="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Authentication</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form name="form" ng-submit="login()" role="form">
+                    <div class="form-group">
+                        <label for="username">Login</label>
+                        <i class="fa fa-key"></i>
+                        <input type="text" name="username" id="username" class="form-control" ng-model="username" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <i class="fa fa-lock"></i>
+                        <input type="password" name="password" id="password" class="form-control" ng-model="password" required/>
+                    </div>
+                    <div class="form-actions text-center">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" ng-disabled="form.username.$pristine">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
     var app = angular.module('myApp', []);
-    app.controller('myCtrl', function($scope) {
+    app.controller('myCtrl', function($scope, averageWeather) {
         $scope.city = [
-            {"name" : "Amsterdam", "day" : "+15", "night" : "+9", "type" : "storm"},
-            {"name" : "Berlin", "day" : "+21", "night" : "+17", "type" : "rain"},
             {"name" : "Chisinau", "day" : "+23", "night" : "+14", "type" : "cloudy"},
-            {"name" : "Juneau", "day" : "+6", "night" : "-1", "type" : "snow"},
+            {"name" : "Berlin", "day" : "+21", "night" : "+17", "type" : "rain"},
+            {"name" : "New-York", "day" : "+19", "night" : "+15", "type" : "fair"},
             {"name" : "Kiev", "day" : "+20", "night" : "+15", "type" : "rain"},
             {"name" : "London", "day" : "+14", "night" : "+7", "type" : "rain"},
+            {"name" : "Juneau", "day" : "+6", "night" : "-1", "type" : "snow"},
             {"name" : "Los-Angeles", "day" : "+29", "night" : "+25", "type" : "fair"},
-            {"name" : "New-York", "day" : "+19", "night" : "+15", "type" : "fair"}
+            {"name" : "Amsterdam", "day" : "+15", "night" : "+9", "type" : "storm"}
         ];
 
-        $scope.registration = [
-            {"login": "admin", "password" : "admin"},
-            {"login": "login", "password" : "password"},
-            {"login": "viktoria", "password" : "abalina1802"}
-        ];
+        $scope.registration = ["login", "password"];
+
+        $scope.login = function() {
+            if ($scope.username.trim() == '' || $scope.password == '') {
+				$scope.isLoggedIn = false;
+			}
+
+			if ($scope.username == $scope.registration[0] && $scope.password == $scope.registration[1]) {
+				$scope.isLoggedIn = true;
+			}
+			else {
+				$scope.isLoggedIn = false;
+			}
+		}
+
+        $scope.menu = function(x1, x2, x3) {
+            $scope.weather = x1;
+            $scope.search = x2;
+            $scope.about = x3;
+	    }
+
+        $scope.average = averageWeather.myFunc(23, 14);
+
+        $scope.mouseMove = function(myE) {
+            $scope.touched = true;
+            $scope.x = myE.clientX;
+            $scope.y = myE.clientY;
+        }
+
+        $scope.removeItem = function (xxx) {
+            $scope.city.splice(xxx, 1);
+        }
+    });
+
+    app.service('averageWeather', function() {
+        this.myFunc = function (x, y) {
+            return (x + y) / 2;
+        }
+    });
+
+    app.directive("footerDirective", function() {
+        return {
+            template : "<p>(c) Viktoria Abalina, FDAW 2020</p>"
+        };
     });
 </script>
 
